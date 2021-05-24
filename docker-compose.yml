@@ -1,0 +1,29 @@
+---
+version: '3.1'
+services:
+    zeppelin:
+        build:
+            args:
+                SPARK_VERSION: '2.3'
+                HADOOP_VERSION: '2.7.7'
+                SCALA_VERSION: '2.11'
+                TZ: 'America/Lima'
+            context: '.'
+        container_name: 'zeppelin'
+        # entrypoint: /bin/bash
+        environment:
+            ZEPPELIN_INTERPRETER_CONNECT_TIMEOUT: 300000
+            LD_LIBRARY_PATH: $LD_LIBRARY_PATH:/home/zeppelin/lib
+        image: 'everis/zeppelin:0.1.0'
+        ports:
+        - 8080:8080
+        - 8081:8081
+        restart: unless-stopped
+        # stdin_open: true # docker run -i
+        # tty: true        # docker run -t
+        volumes:
+        - './conf/zeppelin-site.xml:/opt/zeppelin/conf/zeppelin-site.xml'
+        - './data:/home/zeppelin/data'
+        - './jar:/home/zeppelin/jar'
+        - './lib:/home/zeppelin/lib'
+        - './notebook:/opt/zeppelin/notebook/personal'

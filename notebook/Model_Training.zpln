@@ -1,0 +1,716 @@
+﻿{
+  "paragraphs": [
+    {
+      "title": "Setup Dependencies",
+      "text": "%spark.conf\nspark.jars /home/zeppelin/jar/hdf5-1.12.0-1.5.3-linux-x86_64.jar,/home/zeppelin/jar/leptonica-1.79.0-1.5.3-linux-x86_64.jar,/home/zeppelin/jar/opencv-4.3.0-1.5.3-linux-x86_64.jar\nspark.jars.packages org.deeplearning4j:dl4j-spark_2.11:1.0.0-beta7,org.deeplearning4j:deeplearning4j-core:1.0.0-beta7,org.nd4j:nd4j-native:1.0.0-beta7",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:57:25+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595521_512563214",
+      "id": "paragraph_1621103274923_847702055",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "FINISHED",
+      "focus": true,
+      "$$hashKey": "object:327",
+      "dateFinished": "2021-05-16T10:57:25+0000",
+      "dateStarted": "2021-05-16T10:57:25+0000"
+    },
+    {
+      "title": "Import Libraries",
+      "text": "%spark\n\n\nimport java.util.Date\nimport java.time.LocalDate\nimport java.io.File\nimport java.util.concurrent.TimeUnit\nimport java.text.SimpleDateFormat\n\nimport org.apache.spark.rdd.RDD\nimport org.apache.spark.sql.expressions.{Window, WindowSpec}\nimport org.apache.spark.sql.functions._\nimport org.apache.spark.sql.{DataFrame, SparkSession}\nimport org.apache.spark.sql._\nimport org.apache.spark.api.java.JavaRDD\nimport org.apache.spark.sql.SparkSession\n\nimport org.nd4j.linalg.api.ndarray.INDArray\nimport org.nd4j.linalg.dataset.DataSet\nimport org.nd4j.linalg.dataset.api.preprocessor.NormalizerMinMaxScaler\nimport org.nd4j.linalg.dataset.api.preprocessor._\nimport org.nd4j.linalg.factory.Nd4j\nimport org.nd4j.linalg.activations.Activation\nimport org.nd4j.linalg.dataset.DataSet\nimport org.nd4j.linalg.learning.config.{Adam, RmsProp}\nimport org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction\n\nimport org.deeplearning4j.earlystopping.saver.LocalFileModelSaver\nimport org.deeplearning4j.earlystopping.termination.{MaxEpochsTerminationCondition, MaxTimeIterationTerminationCondition,ScoreImprovementEpochTerminationCondition}\nimport org.deeplearning4j.earlystopping.listener.EarlyStoppingListener\nimport org.deeplearning4j.earlystopping.{EarlyStoppingConfiguration, EarlyStoppingResult}\nimport org.deeplearning4j.nn.api.OptimizationAlgorithm\nimport org.deeplearning4j.nn.conf.layers.recurrent.LastTimeStep\nimport org.deeplearning4j.nn.conf.layers.{BatchNormalization, DenseLayer, DropoutLayer, LSTM, OutputLayer, RnnOutputLayer}\nimport org.deeplearning4j.nn.conf.{BackpropType, GradientNormalization, MultiLayerConfiguration, NeuralNetConfiguration}\nimport org.deeplearning4j.nn.conf.preprocessor.RnnToFeedForwardPreProcessor\nimport org.deeplearning4j.nn.multilayer.MultiLayerNetwork\nimport org.deeplearning4j.nn.weights.WeightInit\nimport org.deeplearning4j.optimize.listeners.ScoreIterationListener\nimport org.deeplearning4j.spark.earlystopping.{SparkDataSetLossCalculator, SparkEarlyStoppingTrainer}\nimport org.deeplearning4j.spark.impl.multilayer.SparkDl4jMultiLayer\nimport org.deeplearning4j.spark.impl.paramavg.ParameterAveragingTrainingMaster\nimport org.deeplearning4j.util.ModelSerializer\n\nimport scala.collection.mutable\n\n\nimport org.slf4j.{Logger, LoggerFactory}",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:57:28+0000",
+      "progress": 0,
+      "config": {
+        "lineNumbers": true,
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import java.util.Date\nimport java.time.LocalDate\nimport java.io.File\nimport java.util.concurrent.TimeUnit\nimport java.text.SimpleDateFormat\nimport org.apache.spark.rdd.RDD\nimport org.apache.spark.sql.expressions.{Window, WindowSpec}\nimport org.apache.spark.sql.functions._\nimport org.apache.spark.sql.{DataFrame, SparkSession}\nimport org.apache.spark.sql._\nimport org.apache.spark.api.java.JavaRDD\nimport org.apache.spark.sql.SparkSession\nimport org.nd4j.linalg.api.ndarray.INDArray\nimport org.nd4j.linalg.dataset.DataSet\nimport org.nd4j.linalg.dataset.api.preprocessor.NormalizerMinMaxScaler\nimport org.nd4j.linalg.dataset.api.preprocessor._\nimport org.nd4j.linalg.factory.Nd4j\nimport org.nd4j.linalg.activations.Activation\nimport org.nd4j.linalg.dataset.DataSet\nimport org.nd4j.linalg.learning.c..."
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595522_1992660523",
+      "id": "paragraph_1621103645417_1388969346",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "PENDING",
+      "$$hashKey": "object:328"
+    },
+    {
+      "text": "%spark\nval minRange = 0\nval maxRange = 1\nval normalizer:NormalizerMinMaxScaler = new NormalizerMinMaxScaler(minRange, maxRange)",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:58:52+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162713936_2067236476",
+      "id": "paragraph_1621162713936_2067236476",
+      "dateCreated": "2021-05-16T10:58:33+0000",
+      "status": "READY",
+      "focus": true,
+      "$$hashKey": "object:1778"
+    },
+    {
+      "text": "%spark\nimport org.nd4j.linalg.factory.Nd4j\nNd4j.create(1)",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "org.apache.zeppelin.interpreter.InterpreterException: java.io.IOException: Interpreter Process creation is time out in 60 seconds\nYou can increase timeout threshold via setting zeppelin.interpreter.connect.timeout of this interpreter.\nSLF4J: Class path contains multiple SLF4J bindings.\nSLF4J: Found binding in [jar:file:/opt/zeppelin/interpreter/spark/spark-interpreter-0.9.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]\nSLF4J: Found binding in [jar:file:/opt/spark/spark-2.4.7-bin-hadoop2.7/jars/slf4j-log4j12-1.7.16.jar!/org/slf4j/impl/StaticLoggerBinder.class]\nSLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.\nSLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]\nIvy Default Cache set to: /opt/zeppelin/.ivy2/cache\nThe jars for the packages stored in: /opt/zeppelin/.ivy2/jars\n:: loading settings :: url = jar:file:/opt/spark/spark-2.4.7-bin-hadoop2.7/jars/ivy-2.4.0.jar!/org/apache/ivy/core/settings/ivysettings.xml\norg.deeplearning4j#deeplearning4j-core added as a dependency\norg.nd4j#nd4j-native-platform added as a dependency\norg.nd4j#nd4j-api added as a dependency\norg.deeplearning4j#dl4j-spark_2.11 added as a dependency\norg.datavec#datavec-api added as a dependency\n:: resolving dependencies :: org.apache.spark#spark-submit-parent-f9b06374-cf91-4db8-9df1-232146fafb4c;1.0\n\tconfs: [default]\n\tfound org.deeplearning4j#deeplearning4j-core;1.0.0-beta6 in central\n\tfound org.deeplearning4j#deeplearning4j-tsne;1.0.0-beta6 in central\n\tfound org.deeplearning4j#nearestneighbor-core;1.0.0-beta6 in central\n\tfound org.nd4j#nd4j-api;1.0.0-beta6 in central\n\tfound com.jakewharton.byteunits#byteunits;0.9.1 in central\n\tfound org.apache.commons#commons-math3;3.5 in central\n\tfound com.google.flatbuffers#flatbuffers-java;1.10.0 in central\n\tfound org.nd4j#protobuf;1.0.0-beta6 in central\n\tfound com.github.oshi#oshi-core;3.4.2 in central\n\tfound net.java.dev.jna#jna-platform;4.3.0 in central\n\tfound net.java.dev.jna#jna;4.3.0 in central\n\tfound org.threeten#threetenbp;1.3.3 in central\n\tfound org.slf4j#slf4j-api;1.7.21 in central\n\tfound org.nd4j#jackson;1.0.0-beta6 in central\n\tfound commons-net#commons-net;3.1 in central\n\tfound org.nd4j#nd4j-buffer;1.0.0-beta6 in central\n\tfound org.nd4j#nd4j-context;1.0.0-beta6 in central\n\tfound org.nd4j#nd4j-common;1.0.0-beta6 in central\n\tfound org.nd4j#guava;1.0.0-beta6 in central\n\tfound commons-io#commons-io;2.5 in central\n\tfound org.apache.commons#commons-lang3;3.6 in central\n\tfound org.apache.commons#commons-compress;1.18 in central\n\tfound commons-codec#commons-codec;1.10 in central\n\tfound org.bytedeco#javacpp;1.5.2 in central\n\tfound net.ericaro#neoitertools;1.0.0 in central\n\tfound org.deeplearning4j#deeplearning4j-nn;1.0.0-beta6 in central\n\tfound org.deeplearning4j#deeplearning4j-utility-iterators;1.0.0-beta6 in central\n\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter.open(RemoteInterpreter.java:129)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter.getFormType(RemoteInterpreter.java:271)\n\tat org.apache.zeppelin.notebook.Paragraph.jobRun(Paragraph.java:444)\n\tat org.apache.zeppelin.notebook.Paragraph.jobRun(Paragraph.java:72)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:132)\n\tat org.apache.zeppelin.scheduler.RemoteScheduler$JobRunner.run(RemoteScheduler.java:182)\n\tat java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)\n\tat java.util.concurrent.FutureTask.run(FutureTask.java:266)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: java.io.IOException: Interpreter Process creation is time out in 60 seconds\nYou can increase timeout threshold via setting zeppelin.interpreter.connect.timeout of this interpreter.\nSLF4J: Class path contains multiple SLF4J bindings.\nSLF4J: Found binding in [jar:file:/opt/zeppelin/interpreter/spark/spark-interpreter-0.9.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]\nSLF4J: Found binding in [jar:file:/opt/spark/spark-2.4.7-bin-hadoop2.7/jars/slf4j-log4j12-1.7.16.jar!/org/slf4j/impl/StaticLoggerBinder.class]\nSLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.\nSLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]\nIvy Default Cache set to: /opt/zeppelin/.ivy2/cache\nThe jars for the packages stored in: /opt/zeppelin/.ivy2/jars\n:: loading settings :: url = jar:file:/opt/spark/spark-2.4.7-bin-hadoop2.7/jars/ivy-2.4.0.jar!/org/apache/ivy/core/settings/ivysettings.xml\norg.deeplearning4j#deeplearning4j-core added as a dependency\norg.nd4j#nd4j-native-platform added as a dependency\norg.nd4j#nd4j-api added as a dependency\norg.deeplearning4j#dl4j-spark_2.11 added as a dependency\norg.datavec#datavec-api added as a dependency\n:: resolving dependencies :: org.apache.spark#spark-submit-parent-f9b06374-cf91-4db8-9df1-232146fafb4c;1.0\n\tconfs: [default]\n\tfound org.deeplearning4j#deeplearning4j-core;1.0.0-beta6 in central\n\tfound org.deeplearning4j#deeplearning4j-tsne;1.0.0-beta6 in central\n\tfound org.deeplearning4j#nearestneighbor-core;1.0.0-beta6 in central\n\tfound org.nd4j#nd4j-api;1.0.0-beta6 in central\n\tfound com.jakewharton.byteunits#byteunits;0.9.1 in central\n\tfound org.apache.commons#commons-math3;3.5 in central\n\tfound com.google.flatbuffers#flatbuffers-java;1.10.0 in central\n\tfound org.nd4j#protobuf;1.0.0-beta6 in central\n\tfound com.github.oshi#oshi-core;3.4.2 in central\n\tfound net.java.dev.jna#jna-platform;4.3.0 in central\n\tfound net.java.dev.jna#jna;4.3.0 in central\n\tfound org.threeten#threetenbp;1.3.3 in central\n\tfound org.slf4j#slf4j-api;1.7.21 in central\n\tfound org.nd4j#jackson;1.0.0-beta6 in central\n\tfound commons-net#commons-net;3.1 in central\n\tfound org.nd4j#nd4j-buffer;1.0.0-beta6 in central\n\tfound org.nd4j#nd4j-context;1.0.0-beta6 in central\n\tfound org.nd4j#nd4j-common;1.0.0-beta6 in central\n\tfound org.nd4j#guava;1.0.0-beta6 in central\n\tfound commons-io#commons-io;2.5 in central\n\tfound org.apache.commons#commons-lang3;3.6 in central\n\tfound org.apache.commons#commons-compress;1.18 in central\n\tfound commons-codec#commons-codec;1.10 in central\n\tfound org.bytedeco#javacpp;1.5.2 in central\n\tfound net.ericaro#neoitertools;1.0.0 in central\n\tfound org.deeplearning4j#deeplearning4j-nn;1.0.0-beta6 in central\n\tfound org.deeplearning4j#deeplearning4j-utility-iterators;1.0.0-beta6 in central\n\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterManagedProcess.start(RemoteInterpreterManagedProcess.java:121)\n\tat org.apache.zeppelin.interpreter.ManagedInterpreterGroup.getOrCreateInterpreterProcess(ManagedInterpreterGroup.java:68)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter.getOrCreateInterpreterProcess(RemoteInterpreter.java:104)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter.internal_create(RemoteInterpreter.java:154)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter.open(RemoteInterpreter.java:126)\n\t... 13 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595522_1211737409",
+      "id": "paragraph_1621111356556_1344207296",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:329"
+    },
+    {
+      "title": "Hive Early Stop Listener",
+      "text": "%spark\nclass LossToHiveEarlyStopListener(spark:SparkSession) extends EarlyStoppingListener[MultiLayerNetwork]{\n  \n    private var onStartCallCount = 0\n    private var onEpochCallCount = 0\n    private var onCompletionCallCount = 0\n    private final val log = LoggerFactory.getLogger(getClass)\n    private val pattern = \"yyyy-MM-dd hh:mm\"\n    private val simpleDateFormat = new SimpleDateFormat(pattern)\n    private val today = simpleDateFormat.format(new Date())\n\n    override def onStart(esConfig:EarlyStoppingConfiguration[MultiLayerNetwork], net:MultiLayerNetwork) = {\n        log.info(s\"EarlyStopping: onStart called :${onStartCallCount}\")\n        onStartCallCount+=1;\n    }\n\n    override def onEpoch(epochNum:Int, score:Double, esConfig:EarlyStoppingConfiguration[MultiLayerNetwork],\n            net:MultiLayerNetwork) = {\n         log.info(\"EarlyStopping: onEpoch called (epochNum= \"+epochNum+\", score=\"+score+\", numLayers=\")\n         //spark.sparkContext.parallelize(List(epochNum,score)).toDF(\"epoch\",\"loss_value\").write.mode(SaveMode.Overwrite).parquet(PropertiesLF.buildTempFileName(\"/tmp\", \"lstm_loss_values\"))\n     onEpochCallCount+=1;\n    }\n\n    override def onCompletion(esResult:EarlyStoppingResult[MultiLayerNetwork]) {\n        log.info(\"EarlyStopping: onCompletion called (result: {}) (layers: {})\", esResult, esResult.getBestModel.getLayers.length)\n    onCompletionCallCount=1;\t\n    }  \n}",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "defined class LossToHiveEarlyStopListener\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595523_1996279423",
+      "id": "paragraph_1621104654695_882761537",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:330"
+    },
+    {
+      "title": "Model Training Methods",
+      "text": "%spark\n\nimport java.sql.Date\n\ndef aggregateOutagesByMonthlyPeriodsAndFeature(featureName: String, outages:DataFrame):DataFrame = {\n    val outagesSimple = outages.withColumn(\"TIMESTAMP_UTC\", expr(\"to_utc_timestamp(TIMESTAMP, 'EST5EDT')\"))\n      .drop(\"YEAR\", \"MONTH\", \"DATE\", \"TIMESTAMP\")\n\n    outagesSimple.withColumn(\"PERIOD\", trunc(col(\"TIMESTAMP_UTC\"), \"month\")).\n      groupBy(featureName, \"PERIOD\").count.orderBy(asc(featureName), asc(\"PERIOD\")).\n      selectExpr(featureName, \"PERIOD\", \"cast(count as double) OUTAGES\")\n  }\n\n  def getPeriodsFrom(fromPeriod:LocalDate):Stream[LocalDate] = {\n    fromPeriod #:: getPeriodsFrom(fromPeriod.plusMonths(1))\n  }\n\n  def getListOfAllMonthlyPeriodsInPeriodsRange(monthlyOutages:DataFrame):List[LocalDate] = {\n    val firstPeriod:LocalDate = monthlyOutages.selectExpr(\"min(PERIOD)\").first.getDate(0).toLocalDate\n    val lastPeriod:LocalDate = monthlyOutages.selectExpr(\"max(PERIOD)\").first.getDate(0).toLocalDate\n    getPeriodsFrom(firstPeriod).takeWhile(_.isBefore(lastPeriod)).toList :+ lastPeriod\n  }\n\n  def getFeaturesAvailableIn(featureName:String, monthlyOutages:DataFrame):List[String] = {\n    monthlyOutages.select(featureName).distinct.orderBy(asc(featureName)).rdd.map(r => r(0).toString).collect().toList\n  }\n\n  def getDataFrameWithAllCombinationsOfPeriodsAndFeatures(featureName:String, features:List[String], periods:List[LocalDate],\n                                                          spark:SparkSession): DataFrame = {\n    spark.createDataFrame(features.flatMap(featureValue => {\n      periods.map(localDate => {\n        Tuple2(featureValue, Date.valueOf(localDate))\n      })\n    })).toDF(featureName, \"PERIOD\")\n  }\n\n  def expandOutagesToAllMonthlyPeriodsAndFillMissingValuesWithZero(featureName:String, monthlyOutages:DataFrame, spark:SparkSession):DataFrame = {\n    val periods:List[LocalDate] = getListOfAllMonthlyPeriodsInPeriodsRange(monthlyOutages)\n    val features:List[String] = getFeaturesAvailableIn(featureName, monthlyOutages)\n    getDataFrameWithAllCombinationsOfPeriodsAndFeatures(featureName, features, periods, spark).\n      join(monthlyOutages, Seq(featureName, \"PERIOD\"), \"outer\").na.fill(0.0, Seq(\"OUTAGES\")).\n      orderBy(asc(featureName), asc(\"PERIOD\"))\n  }\n\n  def computeMonthlySeriesByFeature(featureName:String, outages:DataFrame, spark:SparkSession):DataFrame = {\n    val monthlyOutages:DataFrame = aggregateOutagesByMonthlyPeriodsAndFeature(featureName, outages)\n    expandOutagesToAllMonthlyPeriodsAndFillMissingValuesWithZero(featureName, monthlyOutages, spark)\n  }\n\n  def computeOutagesDifferenceWithPreviousMonthlyPeriod(featureName:String, series:DataFrame):DataFrame = {\n    val windowSpec:WindowSpec = Window.partitionBy(featureName).orderBy(\"PERIOD\")\n    series.withColumn(\"DIFFERENCE\", col(\"OUTAGES\"))\n      .filter(col(\"DIFFERENCE\").isNotNull)\n  }\n\n  def createNormalizer(series:DataFrame, minRange:Int=0, maxRange:Int=1, valuesColumnName:String):NormalizerMinMaxScaler = {\n    val maxValueAvailableInData = series.selectExpr(s\"max($valuesColumnName)\").head().getDouble(0)\n    val minValueAvailableInData = series.selectExpr(s\"min($valuesColumnName)\").head().getDouble(0)\n    val normalizer:NormalizerMinMaxScaler = new NormalizerMinMaxScaler(minRange, maxRange)\n    \n    normalizer.setFeatureStats(Nd4j.create(1).add(minValueAvailableInData), Nd4j.create(1).add(maxValueAvailableInData))\n    normalizer.setLabelStats(Nd4j.create(1).add(minValueAvailableInData), Nd4j.create(1).add(maxValueAvailableInData))\n    normalizer.fitLabel(true)\n    normalizer\n  }\n\n  def getWindowedOutages(series:DataFrame, numInputTimeSteps:Int, numOutputTimeSteps:Int, valuesColumnName:String):DataFrame = {\n    val windowSize:Int = numInputTimeSteps + numOutputTimeSteps\n    val slidingWindow:WindowSpec = Window.partitionBy(\"STATION_ID\").orderBy(asc(\"PERIOD\")).rowsBetween(Window.currentRow, windowSize - 1)\n    series.withColumn(\"WINDOWS\", collect_list(col(valuesColumnName)).over(slidingWindow)).\n      withColumn(\"OUTAGES_COUNT\", count(col(valuesColumnName)).over(slidingWindow)).\n      withColumnRenamed(\"PERIOD\", \"PERIOD_FROM\").\n      withColumn(\"PERIOD_TO\", add_months(col(\"PERIOD_FROM\"), windowSize - 1)).\n      select(\"STATION_ID\", \"PERIOD_FROM\", \"PERIOD_TO\", \"WINDOWS\", \"OUTAGES_COUNT\").\n      filter(col(\"OUTAGES_COUNT\")===windowSize)\n  }\n\n  def normalizeAndVectorizeData(spark:SparkSession, data:DataFrame, numFeatures:Int, numLabels:Int,\n                                normalizer:NormalizerMinMaxScaler): RDD[DataSet]  = {\n    val dataAsList = data.rdd.map(r => r(0).asInstanceOf[mutable.WrappedArray[Double]].toArray)\n    val featureAndLabelsList = splitLabels(spark, dataAsList, numLabels)\n    rddList2NormalizedRddDataSetWithMask(spark, featureAndLabelsList, numFeatures, numLabels, normalizer)\n  }\n\n\n  def splitLabels(spark:SparkSession, rdd:RDD[Array[Double]], numLabels:Int): RDD[(Array[Double], Array[Double])] = {\n    rdd.map(row => {\n      val numFeatures = row.length - numLabels\n      (row.take(numFeatures), row.takeRight(numLabels))\n    })\n  }\n\ndef rddList2NormalizedRddDataSetWithMask(spark:SparkSession, featuresAndLabelsRDD:RDD[(Array[Double], Array[Double])],\n                                           numFeatures:Int=11, numLabels:Int=1, normalizer:NormalizerMinMaxScaler): RDD[DataSet] =\n  {\n\n    featuresAndLabelsRDD.map(row => {\n\n      val labelsList:Array[Double] = row._2\n      val featuresList:Array[Double] = row._1\n      val featuresLength:Int = featuresList.length\n      val labelsLength:Int = if (numLabels > 0) labelsList.length else 0\n      val featureValues:INDArray = Nd4j.create(featuresList.map(_.floatValue())).reshape(1, 1, featuresLength)\n      val labelValues:INDArray = Nd4j.create(labelsList.map(_.floatValue())).reshape(1,labelsLength)\n      normalizer.transform(featureValues)\n      normalizer.transformLabel(labelValues)\n      new DataSet(featureValues, labelValues)\n    })\n  }",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import java.sql.Date\n\u001b[1m\u001b[34maggregateOutagesByMonthlyPeriodsAndFeature\u001b[0m: \u001b[1m\u001b[32m(featureName: String, outages: org.apache.spark.sql.DataFrame)org.apache.spark.sql.DataFrame\u001b[0m\n\u001b[1m\u001b[34mgetPeriodsFrom\u001b[0m: \u001b[1m\u001b[32m(fromPeriod: java.time.LocalDate)Stream[java.time.LocalDate]\u001b[0m\n\u001b[1m\u001b[34mgetListOfAllMonthlyPeriodsInPeriodsRange\u001b[0m: \u001b[1m\u001b[32m(monthlyOutages: org.apache.spark.sql.DataFrame)List[java.time.LocalDate]\u001b[0m\n\u001b[1m\u001b[34mgetFeaturesAvailableIn\u001b[0m: \u001b[1m\u001b[32m(featureName: String, monthlyOutages: org.apache.spark.sql.DataFrame)List[String]\u001b[0m\n\u001b[1m\u001b[34mgetDataFrameWithAllCombinationsOfPeriodsAndFeatures\u001b[0m: \u001b[1m\u001b[32m(featureName: String, features: List[String], periods: List[java.time.LocalDate], spark: org.apache.spark.sql.SparkSession)org.apache.spark.sql.DataFrame\u001b[0m\n\u001b[1..."
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595523_1417694662",
+      "id": "paragraph_1621105842660_1592211283",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:331"
+    },
+    {
+      "title": "Time Series Forecast",
+      "text": "%spark\ndef getLSTMMultiLayerConfiguration(learningRate:Double=0.00001): MultiLayerConfiguration = {\n    new NeuralNetConfiguration.Builder()\n        .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)\n        .seed(12345)\n        .weightInit(WeightInit.XAVIER)\n        .updater(new RmsProp(learningRate))\n        .list()\n        .layer(0, new LSTM.Builder()\n            .activation(Activation.TANH)\n            .nIn(1)\n            .nOut(100)\n            .build())\n        .layer(new LastTimeStep( new LSTM.Builder()\n            .activation(Activation.TANH)\n            .nIn(100)\n            .nOut(50)\n            .build()))\n        .layer(2, new DenseLayer.Builder()\n            .nIn(50)\n            .nOut(25)\n            .activation(Activation.RELU)\n            .build())\n        .layer(3, new DropoutLayer.Builder(0.2)\n            .build())\n        .layer(4, new DenseLayer.Builder()\n            .nIn(25)\n            .nOut(10)\n            .activation(Activation.RELU)\n            .build())\n        .layer(5, new OutputLayer.Builder(LossFunction.MSE)\n            .nIn(10)\n            .nOut(12)\n            .activation(Activation.IDENTITY)\n            .build())\n        //.inputPreProcessor(2, new RnnToFeedForwardPreProcessor())\n        .build()\n}\n\n\ndef trainLSTMEarlyStop(spark:SparkSession, learningRate:Double, batchSizePerWorker:Int=128,\n                                             maxEpochNumber:Int=100, testData:RDD[DataSet], trainData:JavaRDD[DataSet], workersNumber:Int=50,\n                                             numExamplesPerDataset:Int=64, fileModelDir:String, preTrainedModel:String=null,\n                                             minutes:Int=60, maxEpochsWithNoImprovement:Int=100):SparkEarlyStoppingTrainer = {\n    val model:MultiLayerNetwork =\n        if(preTrainedModel==null) new MultiLayerNetwork(getLSTMMultiLayerConfiguration(learningRate))\n        else restoreModel(preTrainedModel, numExamplesPerDataset, batchSizePerWorker, workersNumber, spark).getNetwork\n\n    val trainingMaster:ParameterAveragingTrainingMaster = getTrainingMaster(numExamplesPerDataset, batchSizePerWorker, workersNumber)\n\n        val listener:LossToHiveEarlyStopListener = new LossToHiveEarlyStopListener(spark)\n\n        val earlyStopConfig:EarlyStoppingConfiguration[MultiLayerNetwork] =\n            getEarlyStopConfig(spark, maxEpochNumber, testData, fileModelDir, minutes, maxEpochsWithNoImprovement)\n\n        new SparkEarlyStoppingTrainer(spark.sparkContext, trainingMaster, earlyStopConfig, model, trainData, listener)\n}\n\ndef buildSingleLayerLSTM(spark:SparkSession, learningRate:Double= 0.01, numFeatures:Int, numLabels:Int,\n                                                 batchSizePerWorker:Int=128, maxEpochNumber:Int=10, numExamplesPerDataset:Int=64,\n                                                 workersNumber:Int):SparkDl4jMultiLayer = {\n        val ml = getLSTMMultiLayerConfiguration(learningRate)\n        val tm = getTrainingMaster(numExamplesPerDataset, batchSizePerWorker, workersNumber)\n        new SparkDl4jMultiLayer(spark.sparkContext, ml, tm)\n}\n\ndef getTrainingMaster(rddDataSetNumExamples:Int, batchSizePerWorker:Int, numWorkers:Int)= {\n        new ParameterAveragingTrainingMaster.Builder(numWorkers, rddDataSetNumExamples).\n            averagingFrequency(10).\n            workerPrefetchNumBatches(5).\n            //rddTrainingApproach(RDDTrainingApproach.Direct).\n            batchSizePerWorker(batchSizePerWorker).\n            //storageLevel(StorageLevel.MEMORY_AND_DISK_SER).\n            build\n}\n\ndef restoreModel(filePath:String, examplesPerWorker:Int, batchSizePerWorker:Int=128, numWorkers:Int=50, spark:SparkSession): SparkDl4jMultiLayer = {\n        val modelFile: File = new File(filePath)\n        val restoredModel: MultiLayerNetwork = ModelSerializer.restoreMultiLayerNetwork(modelFile)\n        val trainingMaster: ParameterAveragingTrainingMaster = getTrainingMaster(examplesPerWorker, batchSizePerWorker, numWorkers)\n        new SparkDl4jMultiLayer(spark.sparkContext, restoredModel, trainingMaster)\n}\n\ndef getEarlyStopConfig(spark:SparkSession, epochMaxNumber:Int, testData:RDD[DataSet], directory:String, minutes:Int,\n                                             maxEpochsWithNoImprovement:Int): EarlyStoppingConfiguration[MultiLayerNetwork] = {\n        new EarlyStoppingConfiguration.Builder()\n            .epochTerminationConditions(new MaxEpochsTerminationCondition(epochMaxNumber),\n                new ScoreImprovementEpochTerminationCondition(maxEpochsWithNoImprovement))\n            .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(minutes, TimeUnit.MINUTES))\n            .evaluateEveryNEpochs(1)\n            .scoreCalculator(new SparkDataSetLossCalculator(testData,true, spark.sparkContext))\n            .modelSaver(new LocalFileModelSaver(directory))\n            .build()\n}",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mgetLSTMMultiLayerConfiguration\u001b[0m: \u001b[1m\u001b[32m(learningRate: Double)org.deeplearning4j.nn.conf.MultiLayerConfiguration\u001b[0m\n\u001b[1m\u001b[34mtrainLSTMEarlyStop\u001b[0m: \u001b[1m\u001b[32m(spark: org.apache.spark.sql.SparkSession, learningRate: Double, batchSizePerWorker: Int, maxEpochNumber: Int, testData: org.apache.spark.rdd.RDD[org.nd4j.linalg.dataset.DataSet], trainData: org.apache.spark.api.java.JavaRDD[org.nd4j.linalg.dataset.DataSet], workersNumber: Int, numExamplesPerDataset: Int, fileModelDir: String, preTrainedModel: String, minutes: Int, maxEpochsWithNoImprovement: Int)org.deeplearning4j.spark.earlystopping.SparkEarlyStoppingTrainer\u001b[0m\n\u001b[1m\u001b[34mbuildSingleLayerLSTM\u001b[0m: \u001b[1m\u001b[32m(spark: org.apache.spark.sql.SparkSession, learningRate: Double, numFeatures: Int, numLabels: Int, batchSizePer..."
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595523_2102369149",
+      "id": "paragraph_1621105881612_1699156941",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:332"
+    },
+    {
+      "text": "%spark\n  val csv_file_location = \"/home/zeppelin/data/part-00058-7c5a9764-63b7-42a1-8634-b7fd1a758a52-c000.csv\"\n  val modelInputData_tmp=spark.read.option(\"header\",\"true\").csv(csv_file_location)\n      .withColumn(\"TIMESTAMP\",to_date(col(\"TIMESTAMP\"),\"yyyy-MM-dd\"))\n  val modelInputData=modelInputData_tmp.filter(modelInputData_tmp(\"TIMESTAMP\").leq(lit(\"2020-12-31\")))",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mcsv_file_location\u001b[0m: \u001b[1m\u001b[32mString\u001b[0m = /opt/avangrid/part-00058-7c5a9764-63b7-42a1-8634-b7fd1a758a52-c000.csv\n\u001b[1m\u001b[34mmodelInputData_tmp\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.DataFrame\u001b[0m = [OUTAGE_NO: string, CIRCUIT_ID: string ... 5 more fields]\n\u001b[1m\u001b[34mmodelInputData\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.Dataset[org.apache.spark.sql.Row]\u001b[0m = [OUTAGE_NO: string, CIRCUIT_ID: string ... 5 more fields]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595523_421292334",
+      "id": "paragraph_1621105999658_314575788",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:333"
+    },
+    {
+      "text": "%spark\nmodelInputData.show()",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+---------+----------+----------+----------+----+-----+----------+\n|OUTAGE_NO|CIRCUIT_ID| TIMESTAMP|STATION_ID|YEAR|MONTH|      DATE|\n+---------+----------+----------+----------+----+-----+----------+\n|   200070|    114771|2016-01-20|      KBDR|2021|    4|2021-04-19|\n|   200275|    143879|2016-02-03|      KBDR|2021|    4|2021-04-19|\n|   200536|    172225|2016-02-06|      KBDR|2021|    4|2021-04-19|\n|   200870|    146974|2016-02-22|      KBDR|2021|    4|2021-04-19|\n|   200918|     90226|2016-02-24|      KBDR|2021|    4|2021-04-19|\n|   201373|    109525|2016-02-26|      KBDR|2021|    4|2021-04-19|\n|   201325|    171219|2016-02-26|      KBDR|2021|    4|2021-04-19|\n|   201683|    105470|2016-03-28|      KBDR|2021|    4|2021-04-19|\n|   201733|    112038|2016-03-29|      KBDR|2021|    4|2021-04-19|\n|   201710|    178855|2016-03-29|      KBDR|2021|    4|2021-04-19|\n|   201713|     80235|2016-03-29|      KBDR|2021|    4|2021-04-19|\n|   201906|    151919|2016-03-30|      KBDR|2021|    4|2021-04-19|\n|   201911|    151919|2016-03-30|      KBDR|2021|    4|2021-04-19|\n|   201882|    151919|2016-03-30|      KBDR|2021|    4|2021-04-19|\n|   201898|    151919|2016-03-30|      KBDR|2021|    4|2021-04-19|\n|   201883|    151919|2016-03-30|      KBDR|2021|    4|2021-04-19|\n|   201933|    151919|2016-03-31|      KBDR|2021|    4|2021-04-19|\n|   202041|     72712|2016-04-03|      KBDR|2021|    4|2021-04-19|\n|   201995|     75998|2016-04-03|      KBDR|2021|    4|2021-04-19|\n|   202181|     81579|2016-04-05|      KBDR|2021|    4|2021-04-19|\n+---------+----------+----------+----------+----+-----+----------+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595523_1394473685",
+      "id": "paragraph_1621106068091_502581462",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:334"
+    },
+    {
+      "text": "%spark\n\nval series:DataFrame = computeMonthlySeriesByFeature(\"STATION_ID\", modelInputData, spark)",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mseries\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.DataFrame\u001b[0m = [STATION_ID: string, PERIOD: date ... 1 more field]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595524_101444853",
+      "id": "paragraph_1621106126003_52754211",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:335"
+    },
+    {
+      "text": "%spark\nval stationarySeries:DataFrame = computeOutagesDifferenceWithPreviousMonthlyPeriod(\"STATION_ID\", series)//differenciation was cancel",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mstationarySeries\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.DataFrame\u001b[0m = [STATION_ID: string, PERIOD: date ... 2 more fields]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595524_1201882296",
+      "id": "paragraph_1621106166284_1033397293",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:336"
+    },
+    {
+      "text": "%spark\nval normalizer:NormalizerMinMaxScaler = createNormalizer(stationarySeries, 0, 1, \"OUTAGES\")",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "java.lang.NoClassDefFoundError: Could not initialize class org.nd4j.linalg.factory.Nd4j\n  at org.nd4j.linalg.dataset.api.preprocessor.MinMaxStrategy.<init>(MinMaxStrategy.java:55)\n  at org.nd4j.linalg.dataset.api.preprocessor.NormalizerMinMaxScaler.<init>(NormalizerMinMaxScaler.java:49)\n  at createNormalizer(<console>:126)\n  ... 51 elided\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595524_1215391734",
+      "id": "paragraph_1621106189824_505845535",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:337"
+    },
+    {
+      "text": "%spark\nval numInputTimeSteps=12\nval numOutputTimeSteps=12",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595524_1409897193",
+      "id": "paragraph_1621106211995_1382032764",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:338"
+    },
+    {
+      "text": "%spark\nval windowedStationarySeries = getWindowedOutages(stationarySeries, numInputTimeSteps, numOutputTimeSteps, \"DIFFERENCE\")",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595524_198314686",
+      "id": "paragraph_1621106742160_1039860536",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:339"
+    },
+    {
+      "text": "%spark\nval stationIds:Array[String] = windowedStationarySeries.select(\"STATION_ID\").distinct.rdd.map(r => r(0).toString).collect()",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595524_749249868",
+      "id": "paragraph_1621106754804_1228436651",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:340"
+    },
+    {
+      "text": "%spark\nval stationId=\"KBDR\"",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595524_58346945",
+      "id": "paragraph_1621106778961_744329446",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:341"
+    },
+    {
+      "text": "%spark\nval stationData = windowedStationarySeries.filter(col(\"STATION_ID\")===stationId)\n      .withColumn(\"PERIOD_FROM\",to_date(col(\"PERIOD_FROM\"),\"yyyy-MM-dd\"))",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595525_471523752",
+      "id": "paragraph_1621106783437_1654245205",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:342"
+    },
+    {
+      "text": "%spark\n/* Split train and test without shuffling randomly */\nval trainDF:DataFrame = stationData.filter(stationData(\"PERIOD_FROM\").leq(lit(\"2018-01-01\")))\nval testDF:DataFrame = stationData.filter(stationData(\"PERIOD_FROM\").gt(lit(\"2018-01-01\")))",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595525_751087814",
+      "id": "paragraph_1621106795188_1582378059",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:343"
+    },
+    {
+      "text": "%spark\nval trainData: JavaRDD[DataSet] = normalizeAndVectorizeData(spark, trainDF.select(\"WINDOWS\"), numInputTimeSteps,numOutputTimeSteps, normalizer).toJavaRDD()\nval testData: RDD[DataSet] = normalizeAndVectorizeData(spark, testDF.select(\"WINDOWS\"), numInputTimeSteps, numOutputTimeSteps, normalizer)",
+      "user": "anonymous",
+      "dateUpdated": "2021-05-16T10:56:35+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1621162595525_934229314",
+      "id": "paragraph_1621106819507_1854267139",
+      "dateCreated": "2021-05-16T10:56:35+0000",
+      "status": "READY",
+      "$$hashKey": "object:344"
+    }
+  ],
+  "name": "Model_Training",
+  "id": "2G8HXZEAU",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false"
+  },
+  "info": {},
+  "path": "/Model_Training"
+}
