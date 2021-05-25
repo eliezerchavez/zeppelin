@@ -2,7 +2,7 @@
 
 init=$PWD
 
-mkdir lib && mkdir jar && mkdir data && cd jar \
+[ -d lib ] || mkdir lib && [ -d jar ] || mkdir jar && [ -d data ] || mkdir data && cd jar \
  && curl --remote-name https://repo1.maven.org/maven2/org/bytedeco/hdf5/1.12.0-1.5.3/hdf5-1.12.0-1.5.3-linux-x86_64.jar \
  && curl --remote-name https://repo1.maven.org/maven2/org/bytedeco/leptonica/1.79.0-1.5.3/leptonica-1.79.0-1.5.3-linux-x86_64.jar \
  && curl --remote-name https://repo1.maven.org/maven2/org/nd4j/nd4j-native/1.0.0-beta7/nd4j-native-1.0.0-beta7-linux-x86_64.jar \
