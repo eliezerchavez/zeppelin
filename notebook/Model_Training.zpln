@@ -308,7 +308,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "\u001b[1m\u001b[34mcsv_file_location\u001b[0m: \u001b[1m\u001b[32mString\u001b[0m = /opt/avangrid/part-00058-7c5a9764-63b7-42a1-8634-b7fd1a758a52-c000.csv\n\u001b[1m\u001b[34mmodelInputData_tmp\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.DataFrame\u001b[0m = [OUTAGE_NO: string, CIRCUIT_ID: string ... 5 more fields]\n\u001b[1m\u001b[34mmodelInputData\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.Dataset[org.apache.spark.sql.Row]\u001b[0m = [OUTAGE_NO: string, CIRCUIT_ID: string ... 5 more fields]\n"
+            "data": "\u001b[1m\u001b[34mcsv_file_location\u001b[0m: \u001b[1m\u001b[32mString\u001b[0m = /home/zeppelin/data/part-00058-7c5a9764-63b7-42a1-8634-b7fd1a758a52-c000.csv\n\u001b[1m\u001b[34mmodelInputData_tmp\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.DataFrame\u001b[0m = [OUTAGE_NO: string, CIRCUIT_ID: string ... 5 more fields]\n\u001b[1m\u001b[34mmodelInputData\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.Dataset[org.apache.spark.sql.Row]\u001b[0m = [OUTAGE_NO: string, CIRCUIT_ID: string ... 5 more fields]\n"
           }
         ]
       },

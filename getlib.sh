@@ -14,5 +14,5 @@ mkdir lib && mkdir jar && mkdir data && cd jar \
  && mv org/nd4j/nativeblas/linux-x86_64/*.so* $init/lib && cd .. \
  && cd openblas-0.3.9-1.5.3-linux-x86_64 && jar -xvf ../../jar/openblas-0.3.9-1.5.3-linux-x86_64.jar \
  && mv org/bytedeco/openblas/linux-x86_64/*.so* $init/lib \
- && cd $init/lib && ln -s libopenblas.so libopenblas_nolapack.so.0 \
+ && cd $init/lib && ln -s libopenblas.so.0 libopenblas_nolapack.so.0 \
  && rm -fr $init/lib/nd4j-native-1.0.0-beta7-linux-x86_64 $init/lib/openblas-0.3.9-1.5.3-linux-x86_64 $init/lib/include $init/lib/lib
