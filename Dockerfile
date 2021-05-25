@@ -3,8 +3,16 @@ LABEL MAINTAINER='Eliezer Efrain Chavez <eechavez@nttdata.com>'
 
 ARG HADOOP_VERSION=2.7.7
 ARG SPARK_VERSION=2.3.1
+ARG TZ=America/New_York
 
 USER root
+
+# https://zeppelin.apache.org/docs/latest/setup/basics/how_to_build.html
+RUN apt-get update && apt-get install -y tzdata \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* \
+ && ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime \
+ && dpkg-reconfigure --frontend noninteractive tzdata
 
 # HADOOP
 ENV HADOOP_HOME /opt/hadoop
@@ -20,5 +28,7 @@ ENV SPARK_DIST_CLASSPATH $HADOOP_HOME/etc/hadoop/*:$HADOOP_HOME/share/hadoop/com
 ENV PATH $PATH:$SPARK_HOME/bin
 RUN curl -sL --retry 3 https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-without-hadoop.tgz | tar zxvf - -C /opt \
  && chown -R root:root /opt/spark-${SPARK_VERSION}-bin-without-hadoop && ln -s /opt/spark-${SPARK_VERSION}-bin-without-hadoop /opt/spark
+
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$Z_HOME/lib/native
 
 USER 1000

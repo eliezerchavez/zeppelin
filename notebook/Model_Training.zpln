@@ -2,7 +2,7 @@
   "paragraphs": [
     {
       "title": "Setup Dependencies",
-      "text": "%spark.conf\nspark.jars /home/zeppelin/jar/hdf5-1.12.0-1.5.3-linux-x86_64.jar,/home/zeppelin/jar/leptonica-1.79.0-1.5.3-linux-x86_64.jar,/home/zeppelin/jar/opencv-4.3.0-1.5.3-linux-x86_64.jar\nspark.jars.packages org.deeplearning4j:dl4j-spark_2.11:1.0.0-beta7,org.deeplearning4j:deeplearning4j-core:1.0.0-beta7,org.nd4j:nd4j-native:1.0.0-beta7",
+      "text": "%spark.conf\nspark.jars /opt/zeppelin/jar/hdf5-1.12.0-1.5.3-linux-x86_64.jar,/opt/zeppelin/jar/leptonica-1.79.0-1.5.3-linux-x86_64.jar,/opt/zeppelin/jar/opencv-4.3.0-1.5.3-linux-x86_64.jar\nspark.jars.packages org.deeplearning4j:dl4j-spark_2.11:1.0.0-beta7,org.deeplearning4j:deeplearning4j-core:1.0.0-beta7,org.nd4j:nd4j-native:1.0.0-beta7",
       "user": "anonymous",
       "dateUpdated": "2021-05-16T10:57:25+0000",
       "progress": 0,
@@ -282,7 +282,7 @@
       "$$hashKey": "object:332"
     },
     {
-      "text": "%spark\n  val csv_file_location = \"/home/zeppelin/data/part-00058-7c5a9764-63b7-42a1-8634-b7fd1a758a52-c000.csv\"\n  val modelInputData_tmp=spark.read.option(\"header\",\"true\").csv(csv_file_location)\n      .withColumn(\"TIMESTAMP\",to_date(col(\"TIMESTAMP\"),\"yyyy-MM-dd\"))\n  val modelInputData=modelInputData_tmp.filter(modelInputData_tmp(\"TIMESTAMP\").leq(lit(\"2020-12-31\")))",
+      "text": "%spark\n  val csv_file_location = \"/opt/zeppelin/data/part-00058-7c5a9764-63b7-42a1-8634-b7fd1a758a52-c000.csv\"\n  val modelInputData_tmp=spark.read.option(\"header\",\"true\").csv(csv_file_location)\n      .withColumn(\"TIMESTAMP\",to_date(col(\"TIMESTAMP\"),\"yyyy-MM-dd\"))\n  val modelInputData=modelInputData_tmp.filter(modelInputData_tmp(\"TIMESTAMP\").leq(lit(\"2020-12-31\")))",
       "user": "anonymous",
       "dateUpdated": "2021-05-16T10:56:35+0000",
       "progress": 0,
@@ -308,7 +308,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "\u001b[1m\u001b[34mcsv_file_location\u001b[0m: \u001b[1m\u001b[32mString\u001b[0m = /home/zeppelin/data/part-00058-7c5a9764-63b7-42a1-8634-b7fd1a758a52-c000.csv\n\u001b[1m\u001b[34mmodelInputData_tmp\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.DataFrame\u001b[0m = [OUTAGE_NO: string, CIRCUIT_ID: string ... 5 more fields]\n\u001b[1m\u001b[34mmodelInputData\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.Dataset[org.apache.spark.sql.Row]\u001b[0m = [OUTAGE_NO: string, CIRCUIT_ID: string ... 5 more fields]\n"
+            "data": "\u001b[1m\u001b[34mcsv_file_location\u001b[0m: \u001b[1m\u001b[32mString\u001b[0m = /opt/zeppelin/data/part-00058-7c5a9764-63b7-42a1-8634-b7fd1a758a52-c000.csv\n\u001b[1m\u001b[34mmodelInputData_tmp\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.DataFrame\u001b[0m = [OUTAGE_NO: string, CIRCUIT_ID: string ... 5 more fields]\n\u001b[1m\u001b[34mmodelInputData\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.Dataset[org.apache.spark.sql.Row]\u001b[0m = [OUTAGE_NO: string, CIRCUIT_ID: string ... 5 more fields]\n"
           }
         ]
       },
