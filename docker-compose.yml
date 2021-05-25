@@ -13,7 +13,7 @@ services:
         # entrypoint: /bin/bash
         environment:
             ZEPPELIN_INTERPRETER_CONNECT_TIMEOUT: 300000
-            LD_LIBRARY_PATH: $LD_LIBRARY_PATH:/home/zeppelin/lib
+            LD_LIBRARY_PATH: /home/zeppelin/lib
         image: 'everis/zeppelin:0.1.0'
         ports:
         - 8080:8080
@@ -22,7 +22,6 @@ services:
         # stdin_open: true # docker run -i
         # tty: true        # docker run -t
         volumes:
-        - './conf/zeppelin-site.xml:/opt/zeppelin/conf/zeppelin-site.xml'
         - './data:/home/zeppelin/data'
         - './jar:/home/zeppelin/jar'
         - './lib:/home/zeppelin/lib'
